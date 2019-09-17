@@ -1,0 +1,15 @@
+aiohttp==3.6.0
+aioredis==1.2.0
+async-timeout==3.0.1
+attrs==19.1.0
+bitstring==3.1.6
+chardet==3.0.4
+hiredis==1.0.0
+idna==2.8
+multidict==4.5.2
+neptune-cache-redis==2019.9.15.1347
+neptune-dnsoverhttps-protocol==2019.9.16.1035
+neptune-resolver-default==2019.9.17.1721
+neptune-resolver-rest==2019.9.15.1625
+triton-dns-client==2019.9.17.1754
+yarl==1.3.0
