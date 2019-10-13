@@ -19,6 +19,7 @@ class Server:
         for proto in self.protocols:
             self.loop.create_task(proto.start())
 
+
 if __name__ == '__main__':
     server = Server(config.loop)
     config.loop.run_until_complete(server.start())

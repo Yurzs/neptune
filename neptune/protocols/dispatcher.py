@@ -2,6 +2,7 @@
 from neptune.connector import Connector
 from triton.dns.edns import Edns
 from triton.dns.message import Message
+import json
 
 
 class Dispatcher:
@@ -13,7 +14,7 @@ class Dispatcher:
         self.can_truncate = can_truncate
 
     async def handle(self, raw_data):
-        message = await self.build_message(raw_data)
+        message = self.build_message(raw_data)
         Edns.procede(message)
         result_message = await self.resolve(message)
         return result_message.Binary.full
@@ -26,16 +27,20 @@ class Dispatcher:
         if not result:
             # message.header._rcode = 3
             return message
-        await message.add_dict(result)
+        if isinstance(result, Message):
+            message.add_dict(result.__dict__)
+        else:
+            message.add_dict(result)
 
     async def resolve(self, message):
         for question in message.question:
-            if self.connector.cache_connector:
+            if False:
                 in_cache = await self.connector.cache_connector.Cache.get(name=question.qname.label,
                                                                           type=question.qtype,
                                                                           cls=question.qclass)
                 if in_cache:
-                    await message.add_dict(in_cache)
+                    json_ = json.dumps(in_cache)
+                    message.from_json(json_)
                     message.header._aa = 1
                     return message
                 else:
@@ -49,6 +54,6 @@ class Dispatcher:
                 return message
         return message
 
-    async def build_message(self, raw_data):
-        message = await Message.parse_bytes(raw_data)
+    def build_message(self, raw_data):
+        message = Message.parse_bytes(raw_data)
         return message
